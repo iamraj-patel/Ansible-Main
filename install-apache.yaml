@@ -7,14 +7,36 @@
   - name: Update repository index
     dnf:
       update_cache: yes
+    when: ansible_distribution in ["RedHat", "Rocky"]
+# we can also use ansible_distribution == "RedHat" and ansible_distribution_version == "9.2"
+#So, in this case mentioned above needs both conditions to be corrcet and play book will be specifically targeted to those servers only.
 
   - name: Install Apache package
     dnf:
       name: httpd
-      state: latest  
+      state: latest
+    when: ansible_distribution in ["RedHat", "Rocky"]
 
   - name: Add PHP support for Apache
     dnf:
       name: php-cli.x86_64
       state: latest
+    when: ansible_distribution in ["RedHat", "Rocky"]
 
+
+  - name: Update repository index for Debain and Ubuntu
+    apt:
+      update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: Install Apache package on Debian and Ubuntu
+    apt:
+      name: apache2
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: Add PHP support for Apache on Debian and Ubuntu
+    apt:
+      name: libapache2-mod-php
+      state: latest
+    when: ansible_distribution in ["Debian", "Ubuntu"]

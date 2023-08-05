@@ -8,8 +8,10 @@
     dnf:
       update_cache: yes
     when: ansible_distribution in ["RedHat", "Rocky"]
-# we can also use ansible_distribution == "RedHat" and ansible_distribution_version == "9.2"
+# We can also use ansible_distribution == "RedHat" and ansible_distribution_version == "9.2"
 #So, in this case mentioned above needs both conditions to be corrcet and play book will be specifically targeted to those servers only.
+
+# We can use ansible_distribution == "Debian" to target just Debian servers.
 
   - name: Install Apache package
     dnf:

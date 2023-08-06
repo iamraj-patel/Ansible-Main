@@ -1,0 +1,23 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+# This is for Redhat and it's derivatives
+
+  - name: Install Apache and PHP package as well as upgrading package index.
+    package:
+      name:
+        - "{{ apache_package}}"
+        - "{{ php_package }}"
+      state: latest
+      update_cache: yes
+
+# Here anything in "{{ }}"  is considered as variable. For which values can be found in inventory file.
+
+
+# Here package: in line 10 is basically refering package manager for any hosts so when this playbook gets executed against Debian system package will become "apt" and when this playbook get's executed against Fedora, RedHat, Rocky or Alma it becomes "dnf".
+# package is generic package manager. It can become apt, dnf, zypper, pacman.
+
+

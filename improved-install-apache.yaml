@@ -1,0 +1,31 @@
+---
+
+- hosts: all
+  become: true
+  tasks:
+
+    
+ # This is for Redhat and it's derivatives
+
+  - name: Install Apache and PHP package on RedHat, Rocky or Alma Linux as well as upgrading package index.
+    dnf:
+      name:
+        - httpd
+        - php-cli.x86_64  
+      state: latest
+      update_cache: yes  
+    when: ansible_distribution in ["RedHat", "Rocky"]
+
+
+# This is for Debian and Ubuntu
+
+  - name: Install Apache and PHP package on Debian and Ubuntu Linux as well as upgrading package index.
+    apt:
+      name: 
+        - apache2
+        - libapache2-mod-php    
+      state: latest
+      update_cache: yes  
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+

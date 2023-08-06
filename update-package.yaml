@@ -1,0 +1,25 @@
+---
+- name: Update Oracle Linux
+  hosts: all
+  become: yes
+
+  tasks:
+
+  - name: Update repository index
+    dnf:
+      update_cache: yes
+
+
+  - name: Updating all the packages
+    ansible.builtin.dnf:
+      name:
+        - '*'
+      state: latest
+      update_only: yes
+
+  - name: Updating all Kernel packages
+    ansible.builtin.dnf:
+      name: 
+        "kernel*"
+      state: latest
+

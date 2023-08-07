@@ -1,0 +1,72 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+# Here pre_tasks are used beacuse we want to execute this before anything else. 
+
+  - name: Install updates (RedHat, Rocky and Alma).
+    dnf: 
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution in ["RedHat", "Rocky"]   
+
+  - name: Install updates (Debian and Ubuntu).
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"] 
+
+
+- hosts: web_servers
+  become: true
+  tasks:  
+
+
+ # This is for Redhat and it's derivatives
+
+  - name: Install Apache and PHP package on RedHat, Rocky or Alma Linux.
+    dnf:
+      name:
+        - httpd
+        - php-cli.x86_64  
+      state: latest  
+    when: ansible_distribution in ["RedHat", "Rocky"]
+
+
+# This is for Debian and Ubuntu
+
+  - name: Install Apache and PHP package on Debian and Ubuntu Linux.
+    apt:
+      name: 
+        - apache2
+        - libapache2-mod-php    
+      state: latest  
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+
+- hosts: db_servers
+  become: true
+  tasks:
+    - name: Installing Maridb package (RedHat and it's derivatives).
+      dnf:
+        name: mariadb
+        state: latest
+      when: ansible_distribution in ["RedHat", "Rocky"]
+     
+    - name: Installing Mariadb package (Debain and Ubuntu).
+      apt:
+        name: mariadb-server
+        state: latest
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+
+- hosts: file_servers
+  become: true
+  tasks:
+
+    - name: Installing SAMBA package.
+      package:
+        name: samba
+        state: latest    

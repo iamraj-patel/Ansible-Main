@@ -1,0 +1,5 @@
+192.168.1.132 apache_package=apache2 php_package=libapache2-mod-php
+192.168.1.54 apache_package=httpd php_package=php
+
+# Here line 1 with the ip of 192.168.1.132 is used for Debian or Ubuntu servers.
+# Here line 2 with the ip of 192.168.1.54 is used for RedHat and it's derivatives.

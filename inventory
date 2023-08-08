@@ -4,7 +4,9 @@
 [db_servers]
 192.168.1.54 
 
-
+[file_servers]
+192.168.1.132
+192.168.1.54
 
 # Here line 1 with the ip of 192.168.1.132 is used for Debian or Ubuntu servers.
 # Here line 2 with the ip of 192.168.1.54 is used for RedHat and it's derivatives.
@@ -13,3 +15,5 @@
 # Here web_servers and db_servers mentioned in [] are considered groups.
 # We can have same server listed in multiple groups at a time. 
 
+# For practical demonstration look at site-tags.yaml file.
+# and to run this playbook run command "ansible-playbook --tags rocky --ask-become-pass site-tags.yaml"

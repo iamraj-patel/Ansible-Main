@@ -27,3 +27,6 @@ ansible-playbook --ask-become-pass install-apache.yaml --limit 192.168.1.54
 ansible-playbook --tags rocky --ask-become-pass site-tags.yaml
 # This will only select plays with Tag of "rocky" and execcutes play on all rocky servers.
 
+ansible-playbook --tags "apache,db" --ask-become-pass site-tags.yaml
+# Similarly we can use command from above to traget servers with both apache and db tag from site-tags.yaml
+

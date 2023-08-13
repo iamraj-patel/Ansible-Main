@@ -1,0 +1,132 @@
+---
+
+- hosts: all
+  become: true
+  pre_tasks:
+
+# Here pre_tasks are used beacuse we want to execute this before anything else. 
+
+  - name: Install updates (RedHat, Rocky and Alma).
+    tags: always
+    dnf: 
+      update_only: yes
+      update_cache: yes
+    when: ansible_distribution in ["RedHat", "Rocky"]   
+
+  - name: Install updates (Debian and Ubuntu).
+    tags: always
+    apt:
+      upgrade: dist
+      update_cache: yes
+    when: ansible_distribution in ["Debian", "Ubuntu"] 
+
+- hosts: ansible
+  become: true
+  tasks:
+
+  - name: Install Unzip 
+    package: 
+      name: unzip
+      state: latest
+
+  - name: Install Terraform
+    unarchive: 
+      src: https://releases.hashicorp.com/terraform/1.5.5/terraform_1.5.5_linux_amd64.zip
+      dest: /usr/local/bin
+      remote_src: yes
+      mode: 0755
+      owner: root
+      group: root
+
+- hosts: web_servers
+  become: true
+  tasks:  
+
+ # This is for Redhat and it's derivatives
+
+  - name: Install Apache and PHP package on RedHat, Rocky or Alma Linux.
+    tags: apache, Rocky, httpd
+    dnf:
+      name:
+        - httpd
+        - php-cli.x86_64  
+      state: latest  
+    when: ansible_distribution in ["RedHat", "Rocky"]
+  
+  - name: Start httpd (RedHat and Rocky)
+    tags: httpd, apache, Rocky, RedHat
+    service: 
+      name: httpd
+      state: started
+      enabled: true  
+    when: ansible_distribution in ["Rocky", "RedHat"]    
+      
+# This is for Debian and Ubuntu
+
+  - name: Install Apache and PHP package on Debian and Ubuntu Linux.
+    tags: apache, Apache2, Debian
+    apt:
+      name: 
+        - apache2
+        - libapache2-mod-php    
+      state: latest  
+    when: ansible_distribution in ["Debian", "Ubuntu"]
+
+  - name: Change E-mail address for Admin.
+    tags: apache, Rocky, RedHat, httpd
+    lineinfile:
+      path: /etc/httpd/conf/httpd.conf
+      regexp: '^ServerAdmin'
+      line: ServerAdmin raj@bizmatrics.com
+    when: ansible_distribution in ["RedHat", "Rocky"]
+    register: httpd
+
+# Here lineinfile is module that allows us to make changes to particular line in file.
+# redexp is Regualar Expression. And ^ means that which ever line starts with ServerAdmin.
+# Path is file path which you want to modify.
+
+  - name: Restart httpd (Rocky and RedHat)
+    tags: apache, httpd. Rocky, RedHat
+    service:
+      name: httpd
+      state: restarted
+    when: httpd.changed
+
+#Here httpd.chnaged is variable came from Change E-mail address for Admin. This Restart httpd is only gonna run if Change E-mail address for Admin runs.
+
+  - name: Copy default HTML site.
+    tags: apache, apache2, httpd
+    copy: 
+      src: default_site.html
+      dest: /var/www/html/index.html
+      owner: root
+      group: root
+      mode: 0644   
+
+- hosts: db_servers
+  become: true
+  tasks:
+    - name: Installing Maridb package (RedHat and it's derivatives).
+      tags: rocky, db, mariadb
+      dnf:
+        name: mariadb
+        state: latest
+      when: ansible_distribution in ["RedHat", "Rocky"]
+
+    - name: Installing Mariadb package (Debain and Ubuntu).
+      tags: db, mariadb, Debian
+      apt:
+        name: mariadb-server
+        state: latest
+      when: ansible_distribution in ["Debian", "Ubuntu"]
+
+
+- hosts: file_servers
+  become: true
+  tasks:
+
+    - name: Installing SAMBA package.
+      tags: samba
+      package:
+        name: samba
+        state: latest

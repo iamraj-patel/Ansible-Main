@@ -6,10 +6,10 @@
       ansible.builtin.package:
         name: apache2
 
-  - name: Install Apache and PHP package on Debian and Ubuntu Linux as well as upgrading package index.
-    apt:
-      name: 
-        - podman
+    - name: Install Apache and PHP package on Debian and Ubuntu Linux as well as upgrading package index.
+      apt:
+        name: 
+          - podman
       state: latest
       update_cache: yes  
-    when: ansible_distribution in ["Debian", "Ubuntu"]
+      when: ansible_distribution in ["Debian", "Ubuntu"]

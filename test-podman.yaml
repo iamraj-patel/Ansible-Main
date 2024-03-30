@@ -1,15 +1,17 @@
 ---
 - hosts: my_servers
   become: true
+
   tasks:
+
     - name: Print OS info
       ansible.builtin.package:
         name: apache2
 
     - name: Install Apache and PHP package on Debian and Ubuntu Linux as well as upgrading package index.
       apt:
-        name: 
+        name:
           - podman
-      state: latest
-      update_cache: yes  
+        state: latest
+        update_cache: yes
       when: ansible_distribution in ["Debian", "Ubuntu"]

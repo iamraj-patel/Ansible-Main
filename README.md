@@ -1,3 +1,3 @@
 # Ansible-Main
 
-This is server actually running on Main Hypervisor.
+Ansible server rnning on Proxmox hypervisor where this Playbooks brings servers to stage from where they can be used for production use case.
